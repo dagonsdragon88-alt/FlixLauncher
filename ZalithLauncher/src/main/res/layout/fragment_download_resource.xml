@@ -4,8 +4,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@android:color/transparent">
+    android:background="@color/flix_background_primary">
 
+    <!-- Download list area -->
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/download_layout"
         android:layout_width="0dp"
@@ -23,18 +24,19 @@
             android:layout_marginEnd="@dimen/_minus4sdp"
             android:clipToPadding="false"
             android:paddingHorizontal="@dimen/_8sdp"
-            android:scrollbarThumbVertical="@color/background_menu_element"
+            android:scrollbarThumbVertical="@color/flix_accent"
             android:scrollbars="vertical"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
+        <!-- Loading indicator -->
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/loading_layout"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@drawable/background_card"
+            android:background="@drawable/flix_card_background"
             android:orientation="vertical"
             android:paddingHorizontal="@dimen/_16sdp"
             android:paddingVertical="@dimen/_8sdp"
@@ -49,6 +51,7 @@
                 style="?android:attr/progressBarStyle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:indeterminateTint="@color/flix_accent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
@@ -57,6 +60,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/generic_loading"
+                android:textColor="@color/flix_text_secondary"
                 android:textSize="@dimen/_14ssp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -64,12 +68,14 @@
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
+        <!-- Status text -->
         <TextView
             android:id="@+id/status_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@drawable/background_item"
+            android:background="@drawable/flix_button_background"
             android:padding="@dimen/_12sdp"
+            android:textColor="@color/flix_text_secondary"
             android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="@+id/recycler_view"
             app:layout_constraintEnd_toEndOf="@+id/recycler_view"
@@ -77,6 +83,7 @@
             app:layout_constraintTop_toTopOf="@+id/recycler_view"
             tools:ignore="HardcodedText" />
 
+        <!-- Back to top button -->
         <ImageButton
             android:id="@+id/back_to_top"
             android:layout_width="@dimen/_40sdp"
@@ -88,12 +95,14 @@
             android:scaleType="centerInside"
             android:src="@drawable/ic_spinner_arrow_right"
             android:visibility="gone"
+            app:tint="@color/flix_accent"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             tools:ignore="ContentDescription" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
+    <!-- Filter/operate panel -->
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/operate_layout"
         android:layout_width="0dp"
@@ -108,7 +117,7 @@
             android:id="@+id/shadowView"
             android:layout_width="@dimen/_4sdp"
             android:layout_height="match_parent"
-            android:background="@drawable/shadow_gradient_right"
+            android:background="@color/flix_divider"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="@id/operate_layout"
             app:layout_constraintTop_toTopOf="parent" />
@@ -117,7 +126,7 @@
             android:id="@+id/operate_main_layout"
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:background="@color/menu_overlay"
+            android:background="@color/flix_background_secondary"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/shadowView"
@@ -130,16 +139,22 @@
                 android:layout_marginHorizontal="@dimen/_8sdp"
                 android:layout_marginTop="@dimen/_12sdp"
                 android:text="@string/download_ui_search"
+                android:textColor="@color/flix_accent"
+                android:textSize="@dimen/_13ssp"
+                android:textStyle="bold"
                 app:layout_constraintTop_toTopOf="parent" />
 
+            <!-- Search input -->
             <com.movtery.zalithlauncher.ui.view.AnimEditText
                 android:id="@+id/name_edit"
                 android:layout_width="0dp"
                 android:layout_height="@dimen/_40sdp"
                 android:layout_marginHorizontal="@dimen/_8sdp"
-                android:background="@drawable/background_edit_box"
+                android:background="@drawable/flix_button_background"
                 android:inputType="textPersonName"
                 android:paddingHorizontal="@dimen/padding_heavy"
+                android:textColor="@color/flix_text_primary"
+                android:textColorHint="@color/flix_text_muted"
                 android:textSize="@dimen/_13ssp"
                 app:layout_constraintEnd_toStartOf="@id/search_view"
                 app:layout_constraintStart_toStartOf="parent"
@@ -153,11 +168,13 @@
                 android:background="?android:attr/selectableItemBackgroundBorderless"
                 android:minWidth="@dimen/_38sdp"
                 android:src="@drawable/ic_mod_search"
+                app:tint="@color/flix_accent"
                 app:layout_constraintBottom_toBottomOf="@+id/name_edit"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/search_title"
                 tools:ignore="ContentDescription" />
 
+            <!-- Filter options -->
             <ScrollView
                 android:layout_width="0dp"
                 android:layout_height="0dp"
@@ -172,13 +189,17 @@
                     android:layout_height="wrap_content"
                     android:orientation="vertical">
 
+                    <!-- Install local button -->
                     <com.movtery.zalithlauncher.ui.view.AnimButton
                         android:id="@+id/install_button"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginHorizontal="@dimen/_4sdp"
-                        android:text="@string/download_ui_install_local"/>
+                        android:background="@drawable/flix_button_accent"
+                        android:text="@string/download_ui_install_local"
+                        android:textColor="@color/flix_text_primary" />
 
+                    <!-- Minecraft version filter -->
                     <androidx.constraintlayout.widget.ConstraintLayout
                         android:id="@+id/mc_version_layout"
                         android:layout_width="match_parent"
@@ -191,15 +212,19 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:text="@string/download_ui_mc_version"
+                            android:textColor="@color/flix_text_secondary"
+                            android:textSize="@dimen/_11ssp"
                             app:layout_constraintTop_toTopOf="parent" />
 
                         <com.movtery.zalithlauncher.ui.view.AnimTextView
                             android:id="@+id/selected_mc_version_view"
                             android:layout_width="0dp"
                             android:layout_height="@dimen/_40sdp"
-                            android:background="@drawable/background_edit_box"
+                            android:background="@drawable/flix_button_background"
                             android:hint="@string/version_select_hint"
                             android:paddingHorizontal="@dimen/padding_heavy"
+                            android:textColor="@color/flix_text_primary"
+                            android:textColorHint="@color/flix_text_muted"
                             android:textSize="@dimen/_13ssp"
                             app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintStart_toStartOf="parent"
@@ -207,6 +232,7 @@
 
                     </androidx.constraintlayout.widget.ConstraintLayout>
 
+                    <!-- Platform filter -->
                     <androidx.constraintlayout.widget.ConstraintLayout
                         android:id="@+id/platform_layout"
                         android:layout_width="match_parent"
@@ -219,24 +245,27 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:text="@string/download_ui_platform"
+                            android:textColor="@color/flix_text_secondary"
+                            android:textSize="@dimen/_11ssp"
                             app:layout_constraintTop_toTopOf="parent" />
 
                         <com.skydoves.powerspinner.PowerSpinnerView
                             android:id="@+id/platform_spinner"
                             android:layout_width="0dp"
                             android:layout_height="@dimen/_40sdp"
-                            android:background="@drawable/background_edit_box"
+                            android:background="@drawable/flix_button_background"
                             android:paddingHorizontal="@dimen/_8sdp"
                             app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintStart_toStartOf="parent"
                             app:layout_constraintTop_toBottomOf="@id/platform_textview"
-                            app:spinner_arrow_tint="@color/primary_text"
-                            app:spinner_popup_background="@drawable/background_edit_box"
+                            app:spinner_arrow_tint="@color/flix_accent"
+                            app:spinner_popup_background="@drawable/flix_button_background"
                             app:spinner_popup_height="@dimen/_80sdp"
                             tools:paddingVertical="@dimen/_12sdp" />
 
                     </androidx.constraintlayout.widget.ConstraintLayout>
 
+                    <!-- Sort filter -->
                     <androidx.constraintlayout.widget.ConstraintLayout
                         android:id="@+id/sort_layout"
                         android:layout_width="match_parent"
@@ -249,24 +278,27 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:text="@string/download_ui_sort_by"
+                            android:textColor="@color/flix_text_secondary"
+                            android:textSize="@dimen/_11ssp"
                             app:layout_constraintTop_toTopOf="parent" />
 
                         <com.skydoves.powerspinner.PowerSpinnerView
                             android:id="@+id/sort_spinner"
                             android:layout_width="0dp"
                             android:layout_height="@dimen/_40sdp"
-                            android:background="@drawable/background_edit_box"
+                            android:background="@drawable/flix_button_background"
                             android:paddingHorizontal="@dimen/_8sdp"
                             app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintStart_toStartOf="parent"
                             app:layout_constraintTop_toBottomOf="@id/sort_textview"
-                            app:spinner_arrow_tint="@color/primary_text"
-                            app:spinner_popup_background="@drawable/background_edit_box"
+                            app:spinner_arrow_tint="@color/flix_accent"
+                            app:spinner_popup_background="@drawable/flix_button_background"
                             app:spinner_popup_height="@dimen/_200sdp"
                             tools:paddingVertical="@dimen/_12sdp" />
 
                     </androidx.constraintlayout.widget.ConstraintLayout>
 
+                    <!-- Category filter -->
                     <androidx.constraintlayout.widget.ConstraintLayout
                         android:id="@+id/category_layout"
                         android:layout_width="match_parent"
@@ -279,24 +311,27 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:text="@string/download_ui_category"
+                            android:textColor="@color/flix_text_secondary"
+                            android:textSize="@dimen/_11ssp"
                             app:layout_constraintTop_toTopOf="parent" />
 
                         <com.skydoves.powerspinner.PowerSpinnerView
                             android:id="@+id/category_spinner"
                             android:layout_width="0dp"
                             android:layout_height="@dimen/_40sdp"
-                            android:background="@drawable/background_edit_box"
+                            android:background="@drawable/flix_button_background"
                             android:paddingHorizontal="@dimen/_8sdp"
                             app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintStart_toStartOf="parent"
                             app:layout_constraintTop_toBottomOf="@+id/category_textview"
-                            app:spinner_arrow_tint="@color/primary_text"
-                            app:spinner_popup_background="@drawable/background_edit_box"
+                            app:spinner_arrow_tint="@color/flix_accent"
+                            app:spinner_popup_background="@drawable/flix_button_background"
                             app:spinner_popup_height="@dimen/_200sdp"
                             tools:paddingVertical="@dimen/_12sdp" />
 
                     </androidx.constraintlayout.widget.ConstraintLayout>
 
+                    <!-- Modloader filter -->
                     <androidx.constraintlayout.widget.ConstraintLayout
                         android:id="@+id/modloader_layout"
                         android:layout_width="match_parent"
@@ -309,19 +344,21 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:text="@string/download_ui_modloader"
+                            android:textColor="@color/flix_text_secondary"
+                            android:textSize="@dimen/_11ssp"
                             app:layout_constraintTop_toTopOf="parent" />
 
                         <com.skydoves.powerspinner.PowerSpinnerView
                             android:id="@+id/modloader_spinner"
                             android:layout_width="0dp"
                             android:layout_height="@dimen/_40sdp"
-                            android:background="@drawable/background_edit_box"
+                            android:background="@drawable/flix_button_background"
                             android:paddingHorizontal="@dimen/_8sdp"
                             app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintStart_toStartOf="parent"
                             app:layout_constraintTop_toBottomOf="@+id/modloader_textview"
-                            app:spinner_arrow_tint="@color/primary_text"
-                            app:spinner_popup_background="@drawable/background_edit_box"
+                            app:spinner_arrow_tint="@color/flix_accent"
+                            app:spinner_popup_background="@drawable/flix_button_background"
                             app:spinner_popup_height="@dimen/_200sdp"
                             tools:paddingVertical="@dimen/_12sdp" />
 
@@ -329,13 +366,16 @@
                 </LinearLayout>
             </ScrollView>
 
+            <!-- Action buttons -->
             <com.movtery.zalithlauncher.ui.view.AnimButton
                 android:id="@+id/reset"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginVertical="@dimen/_8sdp"
                 android:layout_marginStart="@dimen/_4sdp"
+                android:background="@drawable/flix_button_background"
                 android:text="@string/generic_reset"
+                android:textColor="@color/flix_text_primary"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@+id/return_button"
                 app:layout_constraintStart_toStartOf="parent" />
@@ -346,7 +386,9 @@
                 android:layout_height="wrap_content"
                 android:layout_marginVertical="@dimen/_8sdp"
                 android:layout_marginEnd="@dimen/_4sdp"
+                android:background="@drawable/flix_button_accent"
                 android:text="@string/generic_return"
+                android:textColor="@color/flix_text_primary"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/reset" />

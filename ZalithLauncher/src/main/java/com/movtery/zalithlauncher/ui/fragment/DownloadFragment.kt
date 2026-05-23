@@ -4,23 +4,19 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.fragment.app.Fragment
-import androidx.viewpager2.adapter.FragmentStateAdapter
-import androidx.viewpager2.widget.ViewPager2
-import androidx.viewpager2.widget.ViewPager2.OnPageChangeCallback
+import android.view.inputmethod.EditorInfo
+import android.widget.TextView
+import android.widget.Toast
 import com.movtery.anim.AnimPlayer
 import com.movtery.anim.animations.Animations
 import com.movtery.zalithlauncher.R
 import com.movtery.zalithlauncher.databinding.FragmentDownloadBinding
-import com.movtery.zalithlauncher.event.value.DownloadPageEvent
-import com.movtery.zalithlauncher.event.value.DownloadPageEvent.PageSwapEvent.Companion.IN
-import com.movtery.zalithlauncher.event.value.DownloadPageEvent.PageSwapEvent.Companion.OUT
+import com.movtery.zalithlauncher.feature.log.Logging
 import com.movtery.zalithlauncher.ui.fragment.download.resource.ModDownloadFragment
 import com.movtery.zalithlauncher.ui.fragment.download.resource.ModPackDownloadFragment
 import com.movtery.zalithlauncher.ui.fragment.download.resource.ResourcePackDownloadFragment
 import com.movtery.zalithlauncher.ui.fragment.download.resource.ShaderPackDownloadFragment
 import com.movtery.zalithlauncher.ui.fragment.download.resource.WorldDownloadFragment
-import org.greenrobot.eventbus.EventBus
 
 class DownloadFragment : FragmentWithAnim(R.layout.fragment_download) {
     companion object {
@@ -28,6 +24,8 @@ class DownloadFragment : FragmentWithAnim(R.layout.fragment_download) {
     }
 
     private lateinit var binding: FragmentDownloadBinding
+    private var currentCategory = -1
+    private lateinit var tabs: List<TextView>
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -39,58 +37,95 @@ class DownloadFragment : FragmentWithAnim(R.layout.fragment_download) {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        initViewPager()
+        super.onViewCreated(view, savedInstanceState)
+        setupTabs()
+        setupSearch()
+        // Load initial tab
+        switchCategory(0)
+    }
 
-        binding.classifyTab.observeIndexChange { _, toIndex, reselect, fromUser ->
-            if (reselect) return@observeIndexChange
-            if (fromUser) binding.downloadViewpager.setCurrentItem(toIndex, false)
+    private fun setupTabs() {
+        tabs = listOf(
+            binding.tabMods,
+            binding.tabModpacks,
+            binding.tabShaders,
+            binding.tabResourcePacks,
+            binding.tabWorlds
+        )
+
+        tabs.forEachIndexed { index, tab ->
+            tab.setOnClickListener { switchCategory(index) }
         }
     }
 
-    private fun initViewPager() {
-        binding.downloadViewpager.apply {
-            adapter = ViewPagerAdapter(this@DownloadFragment)
-            orientation = ViewPager2.ORIENTATION_HORIZONTAL
-            offscreenPageLimit = 1
-            isUserInputEnabled = false
-            registerOnPageChangeCallback(object: OnPageChangeCallback() {
-                override fun onPageSelected(position: Int) {
-                    super.onPageSelected(position)
-                    onFragmentSelect(position)
-                    EventBus.getDefault().post(DownloadPageEvent.PageSwapEvent(position, IN))
-                }
-            })
+    private fun switchCategory(index: Int) {
+        if (index == currentCategory) return
+        currentCategory = index
+
+        val activeColor = resources.getColor(R.color.flix_accent, null)
+        val inactiveColor = resources.getColor(R.color.flix_text_muted, null)
+
+        tabs.forEachIndexed { i, tab ->
+            tab.setTextColor(if (i == index) activeColor else inactiveColor)
+        }
+
+        try {
+            val fragment = when (index) {
+                0 -> ModDownloadFragment()
+                1 -> ModPackDownloadFragment()
+                2 -> ShaderPackDownloadFragment()
+                3 -> ResourcePackDownloadFragment()
+                4 -> WorldDownloadFragment()
+                else -> ModDownloadFragment()
+            }
+
+            childFragmentManager.beginTransaction()
+                .replace(R.id.content_area, fragment)
+                .commit()
+        } catch (e: Exception) {
+            Logging.e("DownloadFragment", "Failed to switch category", e)
+            Toast.makeText(requireContext(), "Failed to load content", Toast.LENGTH_SHORT).show()
         }
     }
 
-    private fun onFragmentSelect(position: Int) {
-        binding.classifyTab.onPageSelected(position)
+    private fun setupSearch() {
+        binding.searchText.setOnEditorActionListener { textView, actionId, _ ->
+            if (actionId == EditorInfo.IME_ACTION_SEARCH) {
+                performSearch(textView.text.toString())
+                true
+            } else {
+                false
+            }
+        }
+
+        binding.searchButton.setOnClickListener {
+            performSearch(binding.searchText.text.toString())
+        }
+    }
+
+    private fun performSearch(query: String) {
+        if (query.isBlank()) return
+
+        try {
+            val currentFragment = childFragmentManager.findFragmentById(R.id.content_area)
+            if (currentFragment is SearchableFragment) {
+                currentFragment.search(query)
+            }
+        } catch (e: Exception) {
+            Logging.e("DownloadFragment", "Search failed", e)
+            Toast.makeText(requireContext(), "Search failed", Toast.LENGTH_SHORT).show()
+        }
     }
 
     override fun slideIn(animPlayer: AnimPlayer) {
-        animPlayer.apply(AnimPlayer.Entry(binding.classifyLayout, Animations.BounceInRight))
+        animPlayer.apply(AnimPlayer.Entry(binding.downloadContent, Animations.BounceInRight))
     }
 
     override fun slideOut(animPlayer: AnimPlayer) {
-        animPlayer.apply(AnimPlayer.Entry(binding.classifyLayout, Animations.FadeOutLeft))
-        EventBus.getDefault().post(DownloadPageEvent.PageSwapEvent(binding.classifyTab.currentItemIndex, OUT))
+        animPlayer.apply(AnimPlayer.Entry(binding.downloadContent, Animations.FadeOutLeft))
     }
+}
 
-    override fun onDestroyView() {
-        EventBus.getDefault().post(DownloadPageEvent.PageDestroyEvent())
-        super.onDestroyView()
-    }
-
-    private class ViewPagerAdapter(private val fragment: Fragment): FragmentStateAdapter(fragment.requireActivity()) {
-        override fun getItemCount(): Int = 5
-        override fun createFragment(position: Int): Fragment {
-            return when(position) {
-                1 -> ModPackDownloadFragment(fragment)
-                2 -> ResourcePackDownloadFragment(fragment)
-                3 -> WorldDownloadFragment(fragment)
-                4 -> ShaderPackDownloadFragment(fragment)
-                else -> ModDownloadFragment(fragment)
-            }
-        }
-    }
+interface SearchableFragment {
+    fun search(query: String)
 }

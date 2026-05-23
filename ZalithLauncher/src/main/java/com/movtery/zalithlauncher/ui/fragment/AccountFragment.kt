@@ -1,9 +1,12 @@
 package com.movtery.zalithlauncher.ui.fragment
 
 import android.annotation.SuppressLint
+import android.app.Activity
+import android.content.Intent
 import android.graphics.Color
 import android.graphics.Typeface
 import android.os.Bundle
+import android.provider.MediaStore
 import android.text.SpannableString
 import android.text.Spanned
 import android.text.style.ForegroundColorSpan
@@ -16,6 +19,7 @@ import android.view.animation.LayoutAnimationController
 import android.widget.EditText
 import android.widget.PopupWindow
 import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -56,6 +60,7 @@ import com.movtery.zalithlauncher.ui.subassembly.account.SelectAccountListener
 import com.movtery.zalithlauncher.utils.ZHTools
 import com.movtery.zalithlauncher.utils.http.NetworkUtils
 import com.movtery.zalithlauncher.utils.path.PathManager
+import com.movtery.zalithlauncher.utils.skin.SkinCapeManager
 import com.movtery.zalithlauncher.utils.stringutils.StringUtils
 import net.kdt.pojavlaunch.Tools
 import net.kdt.pojavlaunch.fragments.MicrosoftLoginFragment
@@ -79,10 +84,53 @@ class AccountFragment : FragmentWithAnim(R.layout.fragment_account), View.OnClic
     private val mAccountsData: MutableList<MinecraftAccount> = AccountsManager.allAccounts.toMutableList()
     private val mAccountAdapter = AccountAdapter(mAccountsData)
 
+    private val skinUploadLauncher = registerForActivityResult(
+        ActivityResultContracts.StartActivityForResult()
+    ) { result ->
+        if (result.resultCode == Activity.RESULT_OK) {
+            result.data?.data?.let { uri ->
+                val account = AccountsManager.currentAccount
+                if (account != null) {
+                    Task.runTask {
+                        SkinCapeManager.uploadSkin(requireContext(), account, uri)
+                    }.ended(TaskExecutors.getAndroidUI()) {
+                        refreshSkinCapePreview()
+                        Toast.makeText(requireContext(), R.string.generic_ok, Toast.LENGTH_SHORT).show()
+                    }.onThrowable(TaskExecutors.getAndroidUI()) { e ->
+                        Logging.e("AccountFragment", "Failed to upload skin", e)
+                        Toast.makeText(requireContext(), R.string.generic_error, Toast.LENGTH_SHORT).show()
+                    }.execute()
+                }
+            }
+        }
+    }
+
+    private val capeUploadLauncher = registerForActivityResult(
+        ActivityResultContracts.StartActivityForResult()
+    ) { result ->
+        if (result.resultCode == Activity.RESULT_OK) {
+            result.data?.data?.let { uri ->
+                val account = AccountsManager.currentAccount
+                if (account != null) {
+                    Task.runTask {
+                        SkinCapeManager.uploadCape(requireContext(), account, uri)
+                    }.ended(TaskExecutors.getAndroidUI()) {
+                        refreshSkinCapePreview()
+                        Toast.makeText(requireContext(), R.string.generic_ok, Toast.LENGTH_SHORT).show()
+                    }.onThrowable(TaskExecutors.getAndroidUI()) { e ->
+                        Logging.e("AccountFragment", "Failed to upload cape", e)
+                        Toast.makeText(requireContext(), R.string.generic_error, Toast.LENGTH_SHORT).show()
+                    }.execute()
+                }
+            }
+        }
+    }
+
     private val selectAccountListener = object : SelectAccountListener {
         override fun onSelect(account: MinecraftAccount) {
             if (!isTaskRunning()) {
                 AccountsManager.currentAccount = account
+                refreshSkinCapePreview()
             } else {
                 TaskExecutors.runInUIThread {
                     Toast.makeText(
@@ -150,8 +198,11 @@ class AccountFragment : FragmentWithAnim(R.layout.fragment_account), View.OnClic
                             File(PathManager.DIR_ACCOUNT_NEW, account.uniqueUUID)
                         val userSkinFile =
                             File(PathManager.DIR_USER_SKIN, account.uniqueUUID + ".png")
+                        val userCapeFile =
+                            File(PathManager.DIR_USER_CAPE, account.uniqueUUID + ".png")
                         if (accountFile.exists()) FileUtils.deleteQuietly(accountFile)
                         if (userSkinFile.exists()) FileUtils.deleteQuietly(userSkinFile)
+                        if (userCapeFile.exists()) FileUtils.deleteQuietly(userCapeFile)
                         reloadAccounts()
                     }.showDialog()
             }
@@ -196,29 +247,42 @@ class AccountFragment : FragmentWithAnim(R.layout.fragment_account), View.OnClic
                     })
                 }
 
-                if (fromUser) { //需要判断是否为用户手动点击的，否则会一直进入微软登录界面
+                if (fromUser) {
                     when (toIndex) {
-                        //微软账户
                         0 -> ZHTools.swapFragmentWithAnim(
                             this@AccountFragment,
                             MicrosoftLoginFragment::class.java,
                             MicrosoftLoginFragment.TAG,
                             null
                         )
-                        //离线账户
                         1 -> {
                             nonMicrosoftLogin(
                                 R.string.account_no_microsoft_account_local
                             ) { localLogin() }
                         }
-                        //外置账户
                         else -> {
                             nonMicrosoftLogin(
                                 R.string.account_no_microsoft_account_other
-                            ) { otherLogin(toIndex - 2) /* Server索引需要从0开始 */ }
+                            ) { otherLogin(toIndex - 2) }
                         }
                     }
                 }
+            }
+
+            uploadSkinButton.setOnClickListener {
+                val intent = Intent(Intent.ACTION_GET_CONTENT).apply {
+                    type = "image/png"
+                    addCategory(Intent.CATEGORY_OPENABLE)
+                }
+                skinUploadLauncher.launch(intent)
+            }
+
+            uploadCapeButton.setOnClickListener {
+                val intent = Intent(Intent.ACTION_GET_CONTENT).apply {
+                    type = "image/png"
+                    addCategory(Intent.CATEGORY_OPENABLE)
+                }
+                capeUploadLauncher.launch(intent)
             }
 
             addServer.setOnClickListener(this@AccountFragment)
@@ -227,6 +291,41 @@ class AccountFragment : FragmentWithAnim(R.layout.fragment_account), View.OnClic
 
         reloadAccounts()
         refreshOtherServer()
+        refreshSkinCapePreview()
+    }
+
+    private fun refreshSkinCapePreview() {
+        val account = AccountsManager.currentAccount ?: return
+
+        try {
+            if (SkinCapeManager.hasCustomSkin(account)) {
+                val faceDrawable = SkinCapeManager.getFaceFromSkin(requireContext(), account, 96)
+                if (faceDrawable != null) {
+                    binding.skinPreview.setImageDrawable(faceDrawable)
+                }
+                binding.skinStatus.text = getString(R.string.generic_ok)
+                binding.skinStatus.setTextColor(ContextCompat.getColor(requireContext(), R.color.flix_accent))
+            } else {
+                binding.skinPreview.setImageResource(R.drawable.ic_help)
+                binding.skinStatus.text = getString(R.string.generic_waiting)
+                binding.skinStatus.setTextColor(ContextCompat.getColor(requireContext(), R.color.flix_text_muted))
+            }
+
+            if (SkinCapeManager.hasCustomCape(account)) {
+                val capeDrawable = SkinCapeManager.getCapeDrawable(requireContext(), account)
+                if (capeDrawable != null) {
+                    binding.capePreview.setImageDrawable(capeDrawable)
+                }
+                binding.capeStatus.text = getString(R.string.generic_ok)
+                binding.capeStatus.setTextColor(ContextCompat.getColor(requireContext(), R.color.flix_accent))
+            } else {
+                binding.capePreview.setImageResource(R.drawable.ic_help)
+                binding.capeStatus.text = getString(R.string.generic_waiting)
+                binding.capeStatus.setTextColor(ContextCompat.getColor(requireContext(), R.color.flix_text_muted))
+            }
+        } catch (e: Exception) {
+            Logging.e("AccountFragment", "Failed to refresh skin/cape preview", e)
+        }
     }
 
     @SuppressLint("NotifyDataSetChanged")
@@ -244,6 +343,7 @@ class AccountFragment : FragmentWithAnim(R.layout.fragment_account), View.OnClic
         }.ended(TaskExecutors.getAndroidUI()) {
             reloadRecyclerView()
             mAccountViewWrapper.refreshAccountInfo()
+            refreshSkinCapePreview()
         }.execute()
     }
 
@@ -351,7 +451,6 @@ class AccountFragment : FragmentWithAnim(R.layout.fragment_account), View.OnClic
                 }
             }
         }.ended(TaskExecutors.getAndroidUI()) {
-            //将外置服务器添加到账号类别选择栏上
             mOtherServerViewList.forEach { view ->
                 binding.accountTypeTab.removeView(view)
             }
@@ -435,7 +534,6 @@ class AccountFragment : FragmentWithAnim(R.layout.fragment_account), View.OnClic
                     checkServerConfig()
                     mOtherServerConfig?.server?.apply addServer@{
                         forEach {
-                            //确保服务器不重复
                             if (it.baseUrl == server.baseUrl) return@addServer
                         }
                         add(server)
@@ -496,6 +594,7 @@ class AccountFragment : FragmentWithAnim(R.layout.fragment_account), View.OnClic
     fun event(event: AccountUpdateEvent) {
         mAccountViewWrapper.refreshAccountInfo()
         reloadRecyclerView()
+        refreshSkinCapePreview()
     }
 
     override fun onClick(v: View) {

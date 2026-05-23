@@ -168,8 +168,10 @@ public final class Tools {
                 }
             }
         }
-        // Remove the ':' at the end
-        libStr.setLength(libStr.length() - 1);
+        // Remove the trailing ':' only if jars were found
+        if (libStr.length() > 0) {
+            libStr.setLength(libStr.length() - 1);
+        }
         return libStr.toString();
     }
 

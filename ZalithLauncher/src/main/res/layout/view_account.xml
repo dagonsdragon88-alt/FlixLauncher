@@ -4,7 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:background="?android:attr/selectableItemBackgroundBorderless">
+    android:background="@drawable/flix_card_background"
+    android:padding="@dimen/_16sdp">
 
     <ImageView
         android:id="@+id/user_icon"
@@ -21,8 +22,9 @@
         android:id="@+id/user_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/_4sdp"
-        android:textSize="@dimen/_16ssp"
+        android:layout_marginTop="@dimen/_8sdp"
+        android:textColor="@color/flix_text_primary"
+        android:textSize="@dimen/_14ssp"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -33,11 +35,12 @@
         android:id="@+id/account_type"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/_2sdp"
-        android:textSize="@dimen/_12ssp"
+        android:layout_marginTop="@dimen/_4sdp"
+        android:textColor="@color/flix_text_secondary"
+        android:textSize="@dimen/_11ssp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/user_name"
-        tools:text="LittleSkin"/>
+        tools:text="LittleSkin" />
 
 </com.movtery.zalithlauncher.ui.layout.AnimConstraintLayout>

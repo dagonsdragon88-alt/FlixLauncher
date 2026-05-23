@@ -4,181 +4,184 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@android:color/transparent"
+    android:background="@color/flix_background_primary"
     tools:ignore="ContentDescription">
 
-    <androidx.viewpager2.widget.ViewPager2
-        android:id="@+id/download_viewpager"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:layout_marginStart="@dimen/_minus4sdp"
+    <!-- Main content area -->
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/download_content"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@id/classify_layout"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/classify_layout"
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        app:layout_constraintStart_toStartOf="parent">
+        <!-- Search bar -->
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/search_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="@dimen/_12sdp"
+            android:layout_marginTop="@dimen/_8sdp"
+            android:background="@drawable/flix_button_background"
+            android:paddingHorizontal="@dimen/_12sdp"
+            android:paddingVertical="@dimen/_8sdp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
 
-        <View
-            android:id="@+id/classify_shadowView"
-            android:layout_width="@dimen/_4sdp"
+            <ImageView
+                android:id="@+id/search_icon"
+                android:layout_width="@dimen/_20sdp"
+                android:layout_height="@dimen/_20sdp"
+                android:src="@drawable/ic_search"
+                app:tint="@color/flix_text_muted"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <EditText
+                android:id="@+id/search_text"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/_8sdp"
+                android:background="@null"
+                android:hint="@string/download_ui_search"
+                android:imeOptions="actionSearch"
+                android:inputType="text"
+                android:maxLines="1"
+                android:textColor="@color/flix_text_primary"
+                android:textColorHint="@color/flix_text_muted"
+                android:textSize="@dimen/_12ssp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@id/search_button"
+                app:layout_constraintStart_toEndOf="@id/search_icon"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <ImageButton
+                android:id="@+id/search_button"
+                android:layout_width="@dimen/_32sdp"
+                android:layout_height="@dimen/_32sdp"
+                android:background="?android:attr/selectableItemBackgroundBorderless"
+                android:scaleType="centerInside"
+                android:src="@drawable/ic_search"
+                app:tint="@color/flix_accent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <!-- Category tabs -->
+        <HorizontalScrollView
+            android:id="@+id/category_scroll"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/_8sdp"
+            android:scrollbars="none"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/search_layout">
+
+            <com.angcyo.tablayout.DslTabLayout
+                android:id="@+id/category_tab"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingHorizontal="@dimen/_8sdp"
+                app:tab_deselect_color="@color/flix_text_muted"
+                app:tab_indicator_color="@color/flix_accent"
+                app:tab_select_color="@color/flix_accent">
+
+                <TextView
+                    android:id="@+id/tab_mods"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingHorizontal="@dimen/_12sdp"
+                    android:paddingVertical="@dimen/_8sdp"
+                    android:text="Mods"
+                    android:textColor="@color/flix_text_primary"
+                    android:textSize="@dimen/_12ssp" />
+
+                <TextView
+                    android:id="@+id/tab_modpacks"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingHorizontal="@dimen/_12sdp"
+                    android:paddingVertical="@dimen/_8sdp"
+                    android:text="Modpacks"
+                    android:textColor="@color/flix_text_primary"
+                    android:textSize="@dimen/_12ssp" />
+
+                <TextView
+                    android:id="@+id/tab_shaders"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingHorizontal="@dimen/_12sdp"
+                    android:paddingVertical="@dimen/_8sdp"
+                    android:text="Shaders"
+                    android:textColor="@color/flix_text_primary"
+                    android:textSize="@dimen/_12ssp" />
+
+                <TextView
+                    android:id="@+id/tab_resource_packs"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingHorizontal="@dimen/_12sdp"
+                    android:paddingVertical="@dimen/_8sdp"
+                    android:text="Resource Packs"
+                    android:textColor="@color/flix_text_primary"
+                    android:textSize="@dimen/_12ssp" />
+
+                <TextView
+                    android:id="@+id/tab_worlds"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingHorizontal="@dimen/_12sdp"
+                    android:paddingVertical="@dimen/_8sdp"
+                    android:text="Worlds"
+                    android:textColor="@color/flix_text_primary"
+                    android:textSize="@dimen/_12ssp" />
+
+            </com.angcyo.tablayout.DslTabLayout>
+
+        </HorizontalScrollView>
+
+        <!-- Filter chips -->
+        <HorizontalScrollView
+            android:id="@+id/filter_scroll"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/_4sdp"
+            android:scrollbars="none"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/category_scroll">
+
+            <LinearLayout
+                android:id="@+id/filter_layout"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:paddingHorizontal="@dimen/_8sdp">
+
+                <!-- Filter chips will be added dynamically -->
+
+            </LinearLayout>
+
+        </HorizontalScrollView>
+
+        <!-- Fragment container for download tabs -->
+        <FrameLayout
+            android:id="@+id/content_area"
+            android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:background="@drawable/shadow_gradient_left"
+            android:layout_marginTop="@dimen/_8sdp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <com.angcyo.tablayout.DslTabLayout
-            android:id="@+id/classify_tab"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:background="@color/menu_overlay"
-            app:layout_constraintEnd_toStartOf="@+id/classify_shadowView"
             app:layout_constraintStart_toStartOf="parent"
-            app:tab_draw_indicator="true"
-            app:tab_indicator_enable_flow="true"
-            app:tab_indicator_drawable="@drawable/selector_bar_vertical"
-            app:tab_indicator_x_offset="@dimen/_4sdp"
-            app:tab_orientation="VERTICAL">
+            app:layout_constraintTop_toBottomOf="@id/filter_scroll" />
 
-            <com.movtery.zalithlauncher.ui.layout.AnimRelativeLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:padding="@dimen/_8sdp">
-
-                <ImageView
-                    android:id="@+id/mod_image"
-                    android:layout_width="@dimen/_28sdp"
-                    android:layout_height="@dimen/_28sdp"
-                    android:layout_centerVertical="true"
-                    android:layout_marginStart="@dimen/_4sdp"
-                    android:background="@android:color/transparent"
-                    android:scaleType="fitCenter"
-                    android:scaleX="0.95"
-                    android:scaleY="0.95"
-                    app:srcCompat="@drawable/ic_profile_mods" />
-
-                <TextView
-                    android:layout_width="@dimen/_70sdp"
-                    android:layout_height="wrap_content"
-                    android:layout_centerVertical="true"
-                    android:layout_marginStart="@dimen/_8sdp"
-                    android:layout_toEndOf="@+id/mod_image"
-                    android:text="@string/download_classify_mod"
-                    android:textColor="@color/black_or_white" />
-            </com.movtery.zalithlauncher.ui.layout.AnimRelativeLayout>
-
-            <com.movtery.zalithlauncher.ui.layout.AnimRelativeLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:padding="@dimen/_8sdp">
-
-                <ImageView
-                    android:id="@+id/modpack_image"
-                    android:layout_width="@dimen/_28sdp"
-                    android:layout_height="@dimen/_28sdp"
-                    android:layout_centerVertical="true"
-                    android:layout_marginStart="@dimen/_4sdp"
-                    android:background="@android:color/transparent"
-                    android:scaleType="fitCenter"
-                    android:scaleX="0.82"
-                    android:scaleY="0.82"
-                    app:srcCompat="@drawable/ic_zip" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_centerVertical="true"
-                    android:layout_marginStart="@dimen/_8sdp"
-                    android:layout_toEndOf="@+id/modpack_image"
-                    android:text="@string/download_classify_modpack"
-                    android:textColor="@color/black_or_white" />
-            </com.movtery.zalithlauncher.ui.layout.AnimRelativeLayout>
-
-            <com.movtery.zalithlauncher.ui.layout.AnimRelativeLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:padding="@dimen/_8sdp">
-
-                <ImageView
-                    android:id="@+id/resource_pack_image"
-                    android:layout_width="@dimen/_28sdp"
-                    android:layout_height="@dimen/_28sdp"
-                    android:layout_centerVertical="true"
-                    android:layout_marginStart="@dimen/_4sdp"
-                    android:background="@android:color/transparent"
-                    android:scaleType="fitCenter"
-                    android:scaleX="0.82"
-                    android:scaleY="0.82"
-                    app:srcCompat="@drawable/ic_profile_resource_pack" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_centerVertical="true"
-                    android:layout_marginStart="@dimen/_8sdp"
-                    android:layout_toEndOf="@+id/resource_pack_image"
-                    android:text="@string/download_classify_resource_pack"
-                    android:textColor="@color/black_or_white" />
-            </com.movtery.zalithlauncher.ui.layout.AnimRelativeLayout>
-
-            <com.movtery.zalithlauncher.ui.layout.AnimRelativeLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:padding="@dimen/_8sdp">
-
-                <ImageView
-                    android:id="@+id/world_image"
-                    android:layout_width="@dimen/_28sdp"
-                    android:layout_height="@dimen/_28sdp"
-                    android:layout_centerVertical="true"
-                    android:layout_marginStart="@dimen/_4sdp"
-                    android:background="@android:color/transparent"
-                    android:scaleType="fitCenter"
-                    android:scaleX="0.78"
-                    android:scaleY="0.78"
-                    app:srcCompat="@drawable/ic_profile_saves" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_centerVertical="true"
-                    android:layout_marginStart="@dimen/_8sdp"
-                    android:layout_toEndOf="@+id/world_image"
-                    android:text="@string/download_classify_world"
-                    android:textColor="@color/black_or_white" />
-            </com.movtery.zalithlauncher.ui.layout.AnimRelativeLayout>
-
-            <com.movtery.zalithlauncher.ui.layout.AnimRelativeLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:padding="@dimen/_8sdp">
-
-                <ImageView
-                    android:id="@+id/shader_pack_image"
-                    android:layout_width="@dimen/_28sdp"
-                    android:layout_height="@dimen/_28sdp"
-                    android:layout_centerVertical="true"
-                    android:layout_marginStart="@dimen/_4sdp"
-                    android:background="@android:color/transparent"
-                    android:scaleType="fitCenter"
-                    android:scaleX="0.95"
-                    android:scaleY="0.95"
-                    app:srcCompat="@drawable/ic_profile_shader_pack" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_centerVertical="true"
-                    android:layout_marginStart="@dimen/_8sdp"
-                    android:layout_toEndOf="@+id/shader_pack_image"
-                    android:text="@string/download_classify_shader_pack"
-                    android:textColor="@color/black_or_white" />
-            </com.movtery.zalithlauncher.ui.layout.AnimRelativeLayout>
-        </com.angcyo.tablayout.DslTabLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>
+
 </androidx.constraintlayout.widget.ConstraintLayout>

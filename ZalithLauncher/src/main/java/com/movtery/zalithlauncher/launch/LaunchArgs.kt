@@ -36,9 +36,12 @@ class LaunchArgs(
         argsList.add("${Tools.getLWJGL3ClassPath()}:$launchClassPath")
 
         if (runtime.javaVersion > 8) {
-            argsList.add("--add-exports")
-            val pkg: String = versionInfo.mainClass.substring(0, versionInfo.mainClass.lastIndexOf("."))
-            argsList.add("$pkg/$pkg=ALL-UNNAMED")
+            val lastDot = versionInfo.mainClass.lastIndexOf(".")
+            if (lastDot > 0) {
+                argsList.add("--add-exports")
+                val pkg: String = versionInfo.mainClass.substring(0, lastDot)
+                argsList.add("$pkg/$pkg=ALL-UNNAMED")
+            }
         }
 
         argsList.add(versionInfo.mainClass)
@@ -78,16 +81,35 @@ class LaunchArgs(
     private fun getMinecraftJVMArgs(): Array<String> {
         val versionInfo = Tools.getVersionInfo(minecraftVersion, true)
 
-//        // Parse Forge 1.17+ additional JVM Arguments
-//        if (versionInfo.inheritsFrom == null || versionInfo.arguments == null || versionInfo.arguments.jvm == null) {
-//            return emptyArray()
-//        }
+        // Build the complete classpath string for ${classpath} replacement
+        val lwjglClassPath = Tools.getLWJGL3ClassPath()
+        val classpath = if (lwjglClassPath.isNotEmpty()) {
+            "$lwjglClassPath:$launchClassPath"
+        } else {
+            launchClassPath
+        }
 
         val varArgMap: MutableMap<String, String?> = android.util.ArrayMap()
         varArgMap["classpath_separator"] = ":"
         varArgMap["library_directory"] = getLibrariesHome()
         varArgMap["version_name"] = versionInfo.id
         varArgMap["natives_directory"] = PathManager.DIR_NATIVE_LIB
+        varArgMap["classpath"] = classpath
+        varArgMap["launcher_name"] = InfoDistributor.LAUNCHER_NAME
+        varArgMap["launcher_version"] = ZHTools.getVersionName()
+        varArgMap["version_type"] = minecraftVersion.getCustomInfo()
+            .takeIf { it.isNotEmpty() && it.isNotBlank() }
+            ?: versionInfo.type
+        varArgMap["auth_player_name"] = account.username
+        varArgMap["auth_uuid"] = account.profileId.replace("-", "")
+        varArgMap["auth_access_token"] = account.accessToken
+        varArgMap["auth_session"] = account.accessToken
+        varArgMap["auth_xuid"] = account.xuid
+        varArgMap["assets_root"] = ProfilePathHome.getAssetsHome()
+        varArgMap["assets_index_name"] = versionInfo.assets
+        varArgMap["game_directory"] = gameDirPath.absolutePath
+        varArgMap["user_properties"] = "{}"
+        varArgMap["user_type"] = "msa"
 
         val minecraftArgs: MutableList<String> = java.util.ArrayList()
         versionInfo.arguments?.let {

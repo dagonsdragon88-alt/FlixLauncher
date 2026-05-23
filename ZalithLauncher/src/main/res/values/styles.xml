@@ -1,27 +1,32 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <!-- FlixLauncher Premium Theme -->
     <style name="AppTheme" parent="@style/Theme.AppCompat.DayNight.NoActionBar">
         <item name="windowNoTitle">true</item>
         <item name="windowActionBar">false</item>
         <item name="android:windowFullscreen">true</item>
         <item name="android:windowContentOverlay">@null</item>
-        <item name="android:statusBarColor">@color/background_status_bar</item>
-        <item name="android:navigationBarColor">@color/background_app</item>
-        <item name="android:scrollbarThumbHorizontal">@color/background_menu_element</item>
-        <item name="android:scrollbarThumbVertical">@color/background_menu_element</item>
+        <item name="android:statusBarColor">@color/flix_background_primary</item>
+        <item name="android:navigationBarColor">@color/flix_background_primary</item>
+        <item name="android:scrollbarThumbHorizontal">@color/flix_accent</item>
+        <item name="android:scrollbarThumbVertical">@color/flix_accent</item>
         <item name="android:textSize">@dimen/_12ssp</item>
+        <item name="android:textColor">@color/flix_text_primary</item>
+        <item name="colorPrimary">@color/flix_accent</item>
+        <item name="colorPrimaryDark">@color/flix_accent_dark</item>
+        <item name="colorAccent">@color/flix_accent</item>
     </style>
 
     <style name="CustomDialogStyle" parent="Theme.AppCompat.Light.Dialog">
         <item name="android:windowBackground">@drawable/dialog_background</item>
-        <item name="android:scrollbarThumbHorizontal">@color/background_menu_element</item>
-        <item name="android:scrollbarThumbVertical">@color/background_menu_element</item>
+        <item name="android:scrollbarThumbHorizontal">@color/flix_accent</item>
+        <item name="android:scrollbarThumbVertical">@color/flix_accent</item>
     </style>
 
     <style name="CustomAlertDialogTheme" parent="Theme.AppCompat.Light.Dialog.Alert">
         <item name="android:windowBackground">@drawable/dialog_background</item>
-        <item name="android:scrollbarThumbHorizontal">@color/background_menu_element</item>
-        <item name="android:scrollbarThumbVertical">@color/background_menu_element</item>
+        <item name="android:scrollbarThumbHorizontal">@color/flix_accent</item>
+        <item name="android:scrollbarThumbVertical">@color/flix_accent</item>
     </style>
 
     <style name="RoundedCornersImageView">
@@ -32,5 +37,27 @@
     <style name="RoundImageView">
         <item name="cornerFamily">rounded</item>
         <item name="cornerSize">50%</item>
+    </style>
+
+    <!-- FlixLauncher Card Style -->
+    <style name="FlixCard">
+        <item name="android:background">@drawable/background_card</item>
+        <item name="android:padding">@dimen/_12sdp</item>
+    </style>
+
+    <!-- FlixLauncher Button Style -->
+    <style name="FlixButton" parent="Widget.AppCompat.Button">
+        <item name="android:background">@drawable/background_item</item>
+        <item name="android:textColor">@color/flix_text_primary</item>
+        <item name="android:paddingHorizontal">@dimen/_16sdp</item>
+        <item name="android:paddingVertical">@dimen/_12sdp</item>
+    </style>
+
+    <!-- FlixLauncher Accent Button Style -->
+    <style name="FlixButtonAccent" parent="Widget.AppCompat.Button">
+        <item name="android:background">@color/flix_accent</item>
+        <item name="android:textColor">@color/flix_text_primary</item>
+        <item name="android:paddingHorizontal">@dimen/_16sdp</item>
+        <item name="android:paddingVertical">@dimen/_12sdp</item>
     </style>
 </resources>

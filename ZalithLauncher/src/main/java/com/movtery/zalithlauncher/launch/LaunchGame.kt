@@ -239,7 +239,26 @@ class LaunchGame {
                 minecraftVersion.getVersionName(),
                 runtime,
                 launchClassPath
-            ).getAllArgs()
+            ).getAllArgs().toMutableList()
+
+            // Safety check: strip any remaining unreplaced template placeholders
+            var hasUnreplaced = false
+            val cleanedArgs = mutableListOf<String>()
+            for (arg in launchArgs) {
+                if (arg.contains("\${")) {
+                    val cleaned = arg.replace(Regex("\\\$\\{[^}]+}"), "")
+                    Logger.appendToLog("WARN: Stripped unreplaced placeholder: $arg -> $cleaned")
+                    if (cleaned.isNotBlank()) cleanedArgs.add(cleaned)
+                    hasUnreplaced = true
+                } else {
+                    cleanedArgs.add(arg)
+                }
+            }
+            if (hasUnreplaced) {
+                Logger.appendToLog("WARN: Some launch arguments contained unreplaced template variables and were cleaned.")
+                launchArgs.clear()
+                launchArgs.addAll(cleanedArgs)
+            }
 
             FFmpegPlugin.discover(activity)
 

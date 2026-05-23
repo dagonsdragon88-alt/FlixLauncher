@@ -3,12 +3,12 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/fragment_menu_main"
-    android:layout_width="fill_parent"
-    android:layout_height="fill_parent"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
     android:background="@android:color/transparent"
-    android:gravity="top"
-    android:orientation="vertical">
+    tools:ignore="ContentDescription">
 
+    <!-- Account list panel -->
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/account_menu"
         android:layout_width="0dp"
@@ -19,6 +19,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
+        <!-- Account type tabs -->
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/account_type_layout"
             android:layout_width="0dp"
@@ -26,8 +27,8 @@
             android:layout_marginTop="@dimen/_12sdp"
             android:layout_marginStart="@dimen/_12sdp"
             android:layout_marginEnd="@dimen/_8sdp"
-            android:background="@drawable/background_card"
-            android:padding="@dimen/_2sdp"
+            android:background="@drawable/flix_card_background"
+            android:padding="@dimen/_4sdp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintEnd_toEndOf="parent">
@@ -40,8 +41,8 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintEnd_toStartOf="@id/add_server"
-                app:tab_deselect_color="@color/black_or_white"
-                app:tab_select_color="@color/black_or_white">
+                app:tab_deselect_color="@color/flix_text_muted"
+                app:tab_select_color="@color/flix_accent">
 
                 <com.movtery.zalithlauncher.ui.layout.AnimRelativeLayout
                     android:id="@+id/add_microsoft_account"
@@ -55,7 +56,7 @@
                         android:layout_height="wrap_content"
                         android:layout_centerVertical="true"
                         android:src="@drawable/ic_add"
-                        tools:ignore="ContentDescription" />
+                        app:tint="@color/flix_text_primary" />
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -63,7 +64,8 @@
                         android:layout_centerVertical="true"
                         android:layout_toEndOf="@id/add_microsoft_image"
                         android:paddingHorizontal="@dimen/_8sdp"
-                        android:text="@string/account_microsoft_account"/>
+                        android:text="@string/account_microsoft_account"
+                        android:textColor="@color/flix_text_primary" />
 
                 </com.movtery.zalithlauncher.ui.layout.AnimRelativeLayout>
 
@@ -79,7 +81,7 @@
                         android:layout_height="wrap_content"
                         android:layout_centerVertical="true"
                         android:src="@drawable/ic_add"
-                        tools:ignore="ContentDescription" />
+                        app:tint="@color/flix_text_primary" />
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -87,7 +89,8 @@
                         android:layout_centerVertical="true"
                         android:layout_toEndOf="@id/add_local_image"
                         android:paddingHorizontal="@dimen/_8sdp"
-                        android:text="@string/account_local_account"/>
+                        android:text="@string/account_local_account"
+                        android:textColor="@color/flix_text_primary" />
 
                 </com.movtery.zalithlauncher.ui.layout.AnimRelativeLayout>
 
@@ -99,17 +102,16 @@
                 android:layout_height="@dimen/_24sdp"
                 android:layout_marginEnd="@dimen/_8sdp"
                 android:scaleType="centerCrop"
-                android:scaleX="0.92"
-                android:scaleY="0.92"
                 android:background="?android:attr/selectableItemBackgroundBorderless"
                 android:src="@drawable/ic_more"
+                app:tint="@color/flix_text_secondary"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                tools:ignore="ContentDescription" />
+                app:layout_constraintEnd_toEndOf="parent" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
+        <!-- Account list -->
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/accounts_recycler"
             android:layout_width="match_parent"
@@ -119,12 +121,14 @@
             android:layout_marginEnd="@dimen/_8sdp"
             android:paddingHorizontal="@dimen/_8sdp"
             android:paddingVertical="@dimen/_4sdp"
-            android:background="@drawable/background_card"
+            android:background="@drawable/flix_card_background"
+            android:scrollbarThumbVertical="@color/flix_accent"
             app:layout_constraintTop_toBottomOf="@id/account_type_layout"
-            app:layout_constraintBottom_toBottomOf="parent"/>
+            app:layout_constraintBottom_toBottomOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
+    <!-- Operation panel with skin/cape customization -->
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/operation_layout"
         android:layout_width="0dp"
@@ -139,47 +143,196 @@
             android:id="@+id/shadowView"
             android:layout_width="@dimen/_4sdp"
             android:layout_height="match_parent"
-            android:background="@drawable/shadow_gradient_right"
+            android:background="@color/flix_divider"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/operation_main_layout"
+        <ScrollView
             android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:background="@color/menu_overlay"
-            app:layout_constraintTop_toTopOf="parent"
+            android:layout_height="0dp"
+            android:layout_marginStart="@dimen/_4sdp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@id/shadowView">
+            app:layout_constraintStart_toEndOf="@id/shadowView"
+            app:layout_constraintTop_toTopOf="parent">
 
-            <com.movtery.zalithlauncher.ui.view.AnimButton
-                android:id="@+id/return_button"
-                android:layout_width="0dp"
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginHorizontal="@dimen/_8sdp"
-                android:layout_marginBottom="@dimen/_8sdp"
-                android:text="@string/generic_return"
-                android:textAllCaps="true"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                tools:ignore="MissingConstraints" />
+                android:orientation="vertical"
+                android:padding="@dimen/_8sdp">
 
-            <include
-                android:id="@+id/view_account"
-                layout="@layout/view_account"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                app:layout_constraintBottom_toTopOf="@id/return_button"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                <!-- Account preview card -->
+                <include
+                    android:id="@+id/view_account"
+                    layout="@layout/view_account"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
 
-        </androidx.constraintlayout.widget.ConstraintLayout>
+                <!-- Skin & Cape customization section -->
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/skin_cape_section"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/_12sdp"
+                    android:background="@drawable/flix_card_background"
+                    android:padding="@dimen/_12sdp">
+
+                    <TextView
+                        android:id="@+id/skin_cape_title"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Skin &amp; Cape"
+                        android:textColor="@color/flix_accent"
+                        android:textSize="@dimen/_13ssp"
+                        android:textStyle="bold"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <!-- Skin preview and upload -->
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:id="@+id/skin_slot"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/_12sdp"
+                        android:background="@drawable/flix_button_background"
+                        android:padding="@dimen/_8sdp"
+                        app:layout_constraintTop_toBottomOf="@id/skin_cape_title">
+
+                        <ImageView
+                            android:id="@+id/skin_preview"
+                            android:layout_width="@dimen/_48sdp"
+                            android:layout_height="@dimen/_48sdp"
+                            android:scaleType="centerCrop"
+                            android:src="@drawable/ic_help"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent"
+                            app:layout_constraintBottom_toBottomOf="parent" />
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="@dimen/_8sdp"
+                            android:orientation="vertical"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintEnd_toStartOf="@id/upload_skin_button"
+                            app:layout_constraintStart_toEndOf="@id/skin_preview"
+                            app:layout_constraintTop_toTopOf="parent">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Player Skin"
+                                android:textColor="@color/flix_text_primary"
+                                android:textSize="@dimen/_12ssp" />
+
+                            <TextView
+                                android:id="@+id/skin_status"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="No custom skin"
+                                android:textColor="@color/flix_text_muted"
+                                android:textSize="@dimen/_10ssp" />
+
+                        </LinearLayout>
+
+                        <com.movtery.zalithlauncher.ui.view.AnimButton
+                            android:id="@+id/upload_skin_button"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:background="@drawable/flix_button_accent"
+                            android:paddingHorizontal="@dimen/_12sdp"
+                            android:paddingVertical="@dimen/_6sdp"
+                            android:text="Upload"
+                            android:textColor="@color/flix_text_primary"
+                            android:textSize="@dimen/_10ssp"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintTop_toTopOf="parent" />
+
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+
+                    <!-- Cape preview and upload -->
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:id="@+id/cape_slot"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/_8sdp"
+                        android:background="@drawable/flix_button_background"
+                        android:padding="@dimen/_8sdp"
+                        app:layout_constraintTop_toBottomOf="@id/skin_slot">
+
+                        <ImageView
+                            android:id="@+id/cape_preview"
+                            android:layout_width="@dimen/_48sdp"
+                            android:layout_height="@dimen/_32sdp"
+                            android:scaleType="centerCrop"
+                            android:src="@drawable/ic_help"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent"
+                            app:layout_constraintBottom_toBottomOf="parent" />
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="@dimen/_8sdp"
+                            android:orientation="vertical"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintEnd_toStartOf="@id/upload_cape_button"
+                            app:layout_constraintStart_toEndOf="@id/cape_preview"
+                            app:layout_constraintTop_toTopOf="parent">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Player Cape"
+                                android:textColor="@color/flix_text_primary"
+                                android:textSize="@dimen/_12ssp" />
+
+                            <TextView
+                                android:id="@+id/cape_status"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="No custom cape"
+                                android:textColor="@color/flix_text_muted"
+                                android:textSize="@dimen/_10ssp" />
+
+                        </LinearLayout>
+
+                        <com.movtery.zalithlauncher.ui.view.AnimButton
+                            android:id="@+id/upload_cape_button"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:background="@drawable/flix_button_accent"
+                            android:paddingHorizontal="@dimen/_12sdp"
+                            android:paddingVertical="@dimen/_6sdp"
+                            android:text="Upload"
+                            android:textColor="@color/flix_text_primary"
+                            android:textSize="@dimen/_10ssp"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintTop_toTopOf="parent" />
+
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <!-- Return button -->
+                <com.movtery.zalithlauncher.ui.view.AnimButton
+                    android:id="@+id/return_button"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/_12sdp"
+                    android:background="@drawable/flix_button_background"
+                    android:text="@string/generic_return"
+                    android:textAllCaps="true"
+                    android:textColor="@color/flix_text_primary" />
+
+            </LinearLayout>
+
+        </ScrollView>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
-
